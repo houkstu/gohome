@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отсчет до подачи документов на УДО</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 30px;
+        }
+        
+        @media (max-width: 1100px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #222;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header h1 {
+            color: #4a9eff;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .stats-card {
+            background: linear-gradient(145deg, #1a1a1a, #151515);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2a2a2a;
+        }
+        
+        .stats-title {
+            color: #4a9eff;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-title i {
+            font-size: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .stat-box {
+            background-color: #252525;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #4a9eff;
+            text-shadow: 0 0 10px rgba(74, 158, 255, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #aaa;
+        }
+        
+        .progress-section {
+            margin: 30px 0;
+        }
+        
+        .progress-title {
+            color: #4a9eff;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .progress-container {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .progress-bar {
+            height: 25px;
+            background-color: #252525;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a6bc4, #4a9eff);
+            border-radius: 12px;
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        .progress-fill-full {
+            background: linear-gradient(90deg, #1a6bc4, #2ecc71);
+        }
+        
+        .dates-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .date-item {
+            background-color: #252525;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-left: 4px solid #4a9eff;
+        }
+        
+        .date-label {
+            color: #aaa;
+        }
+        
+        .date-value {
+            color: #4a9eff;
+            font-weight: 600;
+        }
+        
+        .calendar-card {
+            background: linear-gradient(145deg, #1a1a1a, #151515);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2a2a2a;
+        }
+        
+        .calendar-title {
+            color: #4a9eff;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .calendar-nav button {
+            background-color: #252525;
+            color: #4a9eff;
+            border: 1px solid #333;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calendar-nav button:hover {
+            background-color: #2a2a2a;
+            transform: scale(1.1);
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .calendar-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 15px 0;
+            color: #4a9eff;
+            border-bottom: 1px solid #333;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 500;
+            background-color: #252525;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        
+        .calendar-day:hover {
+            background-color: #2a2a2a;
+            transform: scale(1.05);
+        }
+        
+        .current-day {
+            background-color: #1a3a5f;
+            color: #4a9eff;
+            font-weight: bold;
+            box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+            border: 1px solid #4a9eff;
+        }
+        
+        .target-day {
+            background-color: #1a6bc4;
+            color: white;
+            font-weight: bold;
+            position: relative;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 15px rgba(26, 107, 196, 0.7);
+        }
+        
+        .end-day {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .past-day {
+            color: #666;
+            background-color: #1a1a1a;
+        }
+        
+        .other-month-day {
+            color: #555;
+            background-color: #1a1a1a;
+        }
+        
+        .day-marker {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 0.7rem;
+            color: #ff9800;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #252525;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .legend-udo {
+            background-color: #1a6bc4;
+        }
+        
+        .legend-today {
+            background-color: #1a3a5f;
+        }
+        
+        .legend-end {
+            background-color: #28a745;
+        }
+        
+        .footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            border-radius: 15px;
+            width: 100%;
+        }
+        
+        .motivation {
+            font-style: italic;
+            color: #888;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            padding: 15px;
+            background-color: #252525;
+            border-radius: 10px;
+            border-left: 4px solid #4a9eff;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 600px) {
+            .stat-value {
+                font-size: 2.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-card, .calendar-card {
+                padding: 20px;
+            }
+            
+            .calendar-title {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-hourglass-half"></i> Отсчет до подачи документов на УДО</h1>
+            <p>Данный сайт показывает статистику по времени до даты подачи документов на условно-досрочное освобождение</p>
+        </div>
+        
+        <div class="stats-card">
+            <h2 class="stats-title"><i class="fas fa-chart-line"></i> Статистика времени</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="days-served">0</div>
+                    <div class="stat-label">дней отбыто</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-value" id="days-remaining-udo">0</div>
+                    <div class="stat-label">дней до УДО</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-value" id="days-remaining-end">0</div>
+                    <div class="stat-label">дней до конца срока</div>
+                </div>
+            </div>
+            
+            <div class="progress-section">
+                <h3 class="progress-title"><i class="fas fa-ruler-combined"></i> Прогресс всего срока наказания</h3>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Начало срока: 28.01.2021</span>
+                        <span>Конец срока: 28.07.2028</span>
+                    </div>
+                    <div class="progress-bar" id="full-term-progress">
+                        <div class="progress-fill progress-fill-full" id="full-term-fill">0%</div>
+                        <!-- Убраны маркеры сегодняшнего дня и УДО -->
+                    </div>
+                    <div class="progress-label">
+                        <span id="days-passed-full">0 дней прошло</span>
+                        <span id="total-days-full">0 всего дней</span>
+                    </div>
+                </div>
+                
+                <h3 class="progress-title"><i class="fas fa-file-contract"></i> Прогресс до подачи УДО</h3>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Начало срока: 28.01.2021</span>
+                        <span>Подача УДО: 13.09.2026</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="udo-progress-fill">0%</div>
+                    </div>
+                    <div class="progress-label">
+                        <span id="days-passed-udo">0 дней прошло</span>
+                        <span id="total-days-udo">0 всего дней</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dates-info">
+                <div class="date-item">
+                    <span class="date-label">Дата начала отбывания:</span>
+                    <span class="date-value">28 января 2021 года</span>
+                </div>
+                <div class="date-item">
+                    <span class="date-label">Дата подачи документов на УДО:</span>
+                    <span class="date-value">13 сентября 2026 года</span>
+                </div>
+                <div class="date-item">
+                    <span class="date-label">Дата окончания наказания:</span>
+                    <span class="date-value">28 июля 2028 года</span>
+                </div>
+                <div class="date-item">
+                    <span class="date-label">Сегодняшняя дата:</span>
+                    <span class="date-value" id="current-date">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-card">
+            <div class="calendar-title">
+                <span><i class="fas fa-calendar-alt"></i> Интерактивный календарь</span>
+                <div class="calendar-nav">
+                    <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                    <span id="current-month-year">Сентябрь 2026</span>
+                    <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div id="calendar" class="calendar">
+                <!-- Календарь будет сгенерирован с помощью JavaScript -->
+            </div>
+            
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-today"></div>
+                    <span>Сегодняшний день</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-udo"></div>
+                    <span>День подачи УДО (13.09.2026)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-end"></div>
+                    <span>Конец срока (28.07.2028)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="calendar-day past-day" style="width: 20px; height: 20px;"></div>
+                    <span>Прошедшие дни</span>
+                </div>
+            </div>
+            
+            <div class="motivation">
+                <p><i class="fas fa-quote-left"></i> Каждый прожитый день приближает вас к цели. Используйте оставшееся время с максимальной пользой для подготовки документов на УДО! <i class="fas fa-quote-right"></i></p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Данный сайт создан для отсчета времени до подачи документов на условно-досрочное освобождение</p>
+            <p>Начало отсчета: 28 января 2021 года | Подача УДО: 13 сентября 2026 года | Конец срока: 28 июля 2028 года</p>
+            <p>© 2023 - 2026 | Информация носит справочный характер</p>
+        </div>
+    </div>
+
+    <script>
+        // Даты
+        const startDate = new Date('2021-01-28T00:00:00');
+        const targetUdoDate = new Date('2026-09-13T00:00:00');
+        const endDate = new Date('2028-07-28T00:00:00');
+        
+        // Расчет общих периодов
+        const totalDaysUdo = Math.ceil((targetUdoDate - startDate) / (1000 * 60 * 60 * 24));
+        const totalDaysFull = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+        
+        // Переменные для календаря
+        let currentCalendarDate = new Date(); // Текущий месяц для отображения в календаре
+        
+        // Обновление статистики
+        function updateStats() {
+            const now = new Date();
+            
+            // Расчет дней
+            const daysServed = Math.ceil((now - startDate) / (1000 * 60 * 60 * 24));
+            const daysRemainingUdo = Math.ceil((targetUdoDate - now) / (1000 * 60 * 60 * 24));
+            const daysRemainingEnd = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+            
+            // Обновление отображения
+            document.getElementById('days-served').textContent = daysServed > 0 ? daysServed : 0;
+            document.getElementById('days-remaining-udo').textContent = daysRemainingUdo > 0 ? daysRemainingUdo : 0;
+            document.getElementById('days-remaining-end').textContent = daysRemainingEnd > 0 ? daysRemainingEnd : 0;
+            
+            // Обновление прогресса всего срока
+            const fullTermPercentage = Math.min(Math.max((daysServed / totalDaysFull) * 100, 0), 100);
+            const fullTermFill = document.getElementById('full-term-fill');
+            fullTermFill.style.width = `${fullTermPercentage}%`;
+            fullTermFill.textContent = `${fullTermPercentage.toFixed(1)}%`;
+            
+            // Обновление подписей полной шкалы
+            document.getElementById('days-passed-full').textContent = `${daysServed} дней прошло`;
+            document.getElementById('total-days-full').textContent = `${totalDaysFull} всего дней`;
+            
+            // Обновление прогресса до УДО
+            const udoPercentageProgress = Math.min(Math.max((daysServed / totalDaysUdo) * 100, 0), 100);
+            const udoProgressFill = document.getElementById('udo-progress-fill');
+            udoProgressFill.style.width = `${udoPercentageProgress}%`;
+            udoProgressFill.textContent = `${udoPercentageProgress.toFixed(1)}%`;
+            
+            // Обновление подписей шкалы УДО
+            document.getElementById('days-passed-udo').textContent = `${daysServed} дней прошло`;
+            document.getElementById('total-days-udo').textContent = `${totalDaysUdo} всего дней`;
+            
+            // Обновление текущей даты
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('ru-RU', options);
+            
+            // Обновление каждую секунду
+            setTimeout(updateStats, 1000);
+        }
+        
+        // Генерация календаря для указанного месяца и года
+        function generateCalendar(year, month) {
+            const calendar = document.getElementById('calendar');
+            
+            // Заголовки дней недели
+            const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            
+            // Очистка календаря
+            calendar.innerHTML = '';
+            
+            // Добавление заголовков дней недели
+            weekdays.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+            
+            // Создание даты для первого дня указанного месяца
+            const firstDayOfMonth = new Date(year, month, 1);
+            
+            // Определение дня недели первого дня месяца (0 - воскресенье, 1 - понедельник и т.д.)
+            let firstDayOfWeek = firstDayOfMonth.getDay();
+            // Преобразование к формату Пн=0, Вс=6
+            firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+            
+            // Количество дней в указанном месяце
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Количество дней в предыдущем месяце
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            // Текущая дата
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+            
+            // Дата подачи УДО
+            const isUdoMonth = targetUdoDate.getFullYear() === year && targetUdoDate.getMonth() === month;
+            
+            // Дата окончания срока (показываем только если месяц совпадает)
+            const isEndMonth = endDate.getFullYear() === year && endDate.getMonth() === month;
+            
+            // Добавление дней предыдущего месяца
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month-day';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            }
+            
+            // Добавление дней текущего месяца
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                // Дата для проверки
+                const currentDate = new Date(year, month, day);
+                
+                // Проверка, является ли этот день сегодняшним
+                if (isCurrentMonth && day === today.getDate()) {
+                    dayElement.classList.add('current-day');
+                }
+                
+                // Проверка, является ли этот день днем подачи УДО
+                if (isUdoMonth && day === targetUdoDate.getDate()) {
+                    dayElement.classList.add('target-day');
+                    dayElement.innerHTML = `${day}<div class="day-marker">УДО</div>`;
+                }
+                
+                // Проверка, является ли этот день днем окончания срока
+                if (isEndMonth && day === endDate.getDate()) {
+                    dayElement.classList.add('end-day');
+                    dayElement.innerHTML = `${day}<div class="day-marker">Конец</div>`;
+                }
+                
+                // Проверка, является ли день прошедшим
+                if (currentDate < today && !(currentDate.getDate() === today.getDate() && currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear())) {
+                    dayElement.classList.add('past-day');
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+            
+            // Добавление дней следующего месяца
+            const totalCells = firstDayOfWeek + daysInMonth;
+            const remainingCells = totalCells % 7;
+            const emptyCellsNeeded = remainingCells === 0 ? 0 : 7 - remainingCells;
+            
+            for (let day = 1; day <= emptyCellsNeeded; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month-day';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            }
+            
+            // Обновление заголовка календаря
+            const monthNames = [
+                'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+            ];
+            
+            document.getElementById('current-month-year').textContent = 
+                `${monthNames[month]} ${year}`;
+        }
+        
+        // Навигация по календарю
+        function initCalendarNavigation() {
+            document.getElementById('prev-month').addEventListener('click', function() {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+            });
+            
+            document.getElementById('next-month').addEventListener('click', function() {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+            });
+            
+            // Кнопка для перехода к текущему месяцу
+            const calendarTitle = document.querySelector('.calendar-title span');
+            calendarTitle.addEventListener('click', function() {
+                currentCalendarDate = new Date(); // Вернуться к текущему месяцу
+                generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+            });
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+            initCalendarNavigation();
+        });
+    </script>
+</body>
+</html>
